@@ -1,7 +1,5 @@
 {
-    dsn => 'dbi:mysql:hrforecast;hostname=127.0.0.1',
-    username => '',
-    password => '',
+    dsn => 'dbi:SQLite:path_to_datadir/hrforecast.sqlite',
     port => '5127',
     host => '127.0.0.1',
     front_proxy => [],

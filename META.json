@@ -43,7 +43,7 @@
       },
       "runtime" : {
          "requires" : {
-            "DBD::mysql" : "4.018",
+            "DBD::SQLite" : "1.42",
             "DBIx::Sunny" : "0.14",
             "HTTP::Date" : "0",
             "Kossy" : "0.27",

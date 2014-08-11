@@ -27,9 +27,7 @@ sub dbh {
     my $self = shift;
     local $Scope::Container::DBI::DBI_CLASS = 'DBIx::Sunny';    
     Scope::Container::DBI->connect(
-        HRForecast->config->{dsn},
-        HRForecast->config->{username},
-        HRForecast->config->{password}
+        HRForecast->config->{dsn}
     );
 }
 
@@ -112,7 +110,7 @@ sub update {
         my $meta = encode_json({ color => $color });
         $dbh->query(
             'INSERT INTO metrics (service_name, section_name, graph_name, meta, created_at) 
-                         VALUES (?,?,?,?,NOW())',
+                         VALUES (?,?,?,?,(datetime(\'now\',\'localtime\')))',
             $service, $section, $graph, $meta
         );
         $metrics = $self->get($service, $section, $graph);
@@ -121,7 +119,8 @@ sub update {
 
     my $fixed_timestamp = $timestamp - ($timestamp % $self->round_interval);
     $dbh->query(
-        'REPLACE data SET metrics_id = ?, datetime = ?, number = ?',
+        'INSERT OR REPLACE INTO data (metrics_id, datetime, number)
+                                VALUES (?,?,?)',
         $metrics->{id}, localtime($fixed_timestamp)->mysql_datetime, $number
     );
 
@@ -255,7 +254,7 @@ sub create_complex {
     my $meta = encode_json($args);
     $self->dbh->query(
         'INSERT INTO complex (service_name, section_name, graph_name, sort, meta,  created_at) 
-                         VALUES (?,?,?,?,?,NOW())',
+                         VALUES (?,?,?,?,?,(datetime(\'now\',\'localtime\')))',
         $service, $section, $graph, @update, $meta
     ); 
     $self->get_complex($service, $section, $graph);
