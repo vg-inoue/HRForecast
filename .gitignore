@@ -20,3 +20,4 @@ MYMETA.*
 !Build/
 !META.json
 !LICENSE
+config.pl
